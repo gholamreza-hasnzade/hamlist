@@ -1,0 +1,6 @@
+import type { LucideIcon } from "lucide-react";
+import { Card } from "@/components/ui/card";
+import { cn } from "@/lib/utils";
+export function StatCard({ label, value, note, icon: Icon, tone = "violet" }: { label: string; value: string | number; note: string; icon: LucideIcon; tone?: "violet" | "blue" | "slate" }) {
+  return <Card className="stat-card group relative overflow-hidden p-4 transition duration-200 hover:-translate-y-1 hover:shadow-lift sm:p-5"><div className="flex items-start justify-between gap-3"><div><p className="mb-3 text-xs font-medium text-muted">{label}</p><p className="mb-1 text-3xl font-bold tracking-tight text-ink">{value}</p><p className="mb-0 text-[11px] text-muted">{note}</p></div><span className={cn("grid size-10 place-items-center rounded-2xl", tone === "violet" ? "bg-brand-soft text-brand" : tone === "blue" ? "bg-blue-50 text-blue-700 dark:bg-blue-950 dark:text-blue-300" : "bg-soft text-muted")}><Icon className="size-5" /></span></div><span className={cn("absolute inset-x-0 bottom-0 h-[3px] opacity-70", tone === "violet" ? "bg-gradient-to-r from-brand/20 via-brand to-brand/30" : tone === "blue" ? "bg-gradient-to-r from-sky-200 via-sky-500 to-sky-200" : "bg-gradient-to-r from-slate-200 via-slate-400 to-slate-200")} /></Card>;
+}
