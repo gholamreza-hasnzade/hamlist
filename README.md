@@ -43,6 +43,10 @@ Open [http://localhost:3000](http://localhost:3000). The development server bind
 
 ## Product preview
 
+![HamList desktop dashboard in Persian (RTL) with the dark theme](docs/screenshots/hamlist-dashboard-fa-dark.png)
+
+*Desktop dashboard · Persian (RTL) · Dark theme.*
+
 The current UI includes:
 
 - A responsive dashboard with overview statistics, shared spaces, recent activity and tasks
