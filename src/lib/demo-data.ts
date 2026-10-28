@@ -19,9 +19,12 @@ export type DemoList = {
 };
 
 export type DemoSpace = { id: string; nameFa: string; nameEn: string; emoji: string; memberCount: number; descriptionFa: string; descriptionEn: string };
+export type DemoAssignee = "me" | "mahdi" | "sara" | "arman" | "unassigned";
 export type DemoTask = { id: string; titleFa: string; titleEn: string; spaceId: string; assignedFa: string; assignedEn: string; due: "today" | "tomorrow" | "week" | "none"; done: boolean; priority: "high" | "normal" };
-export type DemoExpense = { id: string; titleFa: string; titleEn: string; amount: number; currency: string; paidByFa: string; paidByEn: string; date: string };
-export type DemoState = { spaces: DemoSpace[]; lists: DemoList[]; tasks: DemoTask[]; expenses: DemoExpense[] };
+export type DemoReminder = { id: string; titleFa: string; titleEn: string; spaceId: string; dueAt: string; done: boolean };
+export type DemoActivity = { id: string; type: "space" | "list" | "item" | "task" | "reminder" | "expense"; actionFa: string; actionEn: string; titleFa: string; titleEn: string; spaceId?: string; createdAt: string };
+export type DemoExpense = { id: string; titleFa: string; titleEn: string; amount: number; currency: string; paidByFa: string; paidByEn: string; date: string; settled: boolean };
+export type DemoState = { spaces: DemoSpace[]; lists: DemoList[]; tasks: DemoTask[]; reminders: DemoReminder[]; expenses: DemoExpense[]; activity: DemoActivity[] };
 
 export const initialDemoState: DemoState = {
   spaces: [
@@ -57,11 +60,17 @@ export const initialDemoState: DemoState = {
     { id: "t3", titleFa: "پرداخت قبض اینترنت", titleEn: "Pay the internet bill", spaceId: "home", assignedFa: "سارا", assignedEn: "Sara", due: "week", done: false, priority: "normal" },
     { id: "t4", titleFa: "مرتب‌کردن انباری", titleEn: "Tidy the storage room", spaceId: "home", assignedFa: "—", assignedEn: "—", due: "none", done: true, priority: "normal" },
   ],
-  expenses: [
-    { id: "e1", titleFa: "خرید هفتگی", titleEn: "Weekly groceries", amount: 48, currency: "€", paidByFa: "مهدی", paidByEn: "Mahdi", date: "2026-10-26" },
-    { id: "e2", titleFa: "قبض اینترنت", titleEn: "Internet bill", amount: 36, currency: "€", paidByFa: "سارا", paidByEn: "Sara", date: "2026-10-24" },
-    { id: "e3", titleFa: "مواد پیک‌نیک", titleEn: "Picnic supplies", amount: 22.5, currency: "€", paidByFa: "آرمان", paidByEn: "Arman", date: "2026-10-22" },
+  reminders: [
+    { id: "r1", titleFa: "مرتب‌کردن خرید هفتگی", titleEn: "Put away the weekly shop", spaceId: "home", dueAt: "2026-10-28T18:00", done: false },
+    { id: "r2", titleFa: "آماده‌کردن وسایل پیک‌نیک", titleEn: "Pack picnic supplies", spaceId: "friends", dueAt: "2026-10-29T10:00", done: false },
+    { id: "r3", titleFa: "پرداخت قبض اینترنت", titleEn: "Pay the internet bill", spaceId: "home", dueAt: "2026-10-30T12:00", done: false },
   ],
+  expenses: [
+    { id: "e1", titleFa: "خرید هفتگی", titleEn: "Weekly groceries", amount: 48, currency: "€", paidByFa: "مهدی", paidByEn: "Mahdi", date: "2026-10-26", settled: false },
+    { id: "e2", titleFa: "قبض اینترنت", titleEn: "Internet bill", amount: 36, currency: "€", paidByFa: "سارا", paidByEn: "Sara", date: "2026-10-24", settled: true },
+    { id: "e3", titleFa: "مواد پیک‌نیک", titleEn: "Picnic supplies", amount: 22.5, currency: "€", paidByFa: "آرمان", paidByEn: "Arman", date: "2026-10-22", settled: false },
+  ],
+  activity: [],
 };
 
 export function cloneInitialData(): DemoState {

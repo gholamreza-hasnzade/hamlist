@@ -1,11 +1,11 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useTheme } from "next-themes";
 import { toast } from "sonner";
-import { Bell, Check, CircleHelp, Grid2X2, Home, ListChecks, Moon, Plus, Search, Settings2, Sun, WalletCards, type LucideIcon } from "lucide-react";
+import { Activity as ActivityIcon, Bell, Check, CircleHelp, ClipboardList, Grid2X2, Home, ListChecks, Moon, Plus, Search, Settings2, Sun, WalletCards, type LucideIcon } from "lucide-react";
 import { useLocale } from "@/providers/locale-provider";
 import { useDemoData } from "@/providers/demo-data-provider";
 import { Button } from "@/components/ui/button";
@@ -21,8 +21,10 @@ type NavItem = { href: string; key: TranslationKey; icon: LucideIcon; exact?: bo
 const nav: NavItem[] = [
   { href: "/app", key: "home" as const, icon: Home, exact: true },
   { href: "/app/spaces", key: "spaces" as const, icon: Grid2X2 },
+  { href: "/app/templates", key: "templates" as const, icon: ClipboardList },
   { href: "/app/tasks", key: "tasks" as const, icon: ListChecks },
   { href: "/app/reminders", key: "reminders" as const, icon: Bell },
+  { href: "/app/activity", key: "activity" as const, icon: ActivityIcon },
   { href: "/app/expenses", key: "expenses" as const, icon: WalletCards },
 ];
 
@@ -36,7 +38,18 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   const isDark = mounted && theme === "dark";
   const [newListOpen, setNewListOpen] = useState(false);
   const [query, setQuery] = useState("");
+  const searchInputRef = useRef<HTMLInputElement>(null);
   useEffect(() => { setMounted(true); }, []);
+  useEffect(() => {
+    const onShortcut = (event: KeyboardEvent) => {
+      if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === "k") {
+        event.preventDefault();
+        searchInputRef.current?.focus();
+      }
+    };
+    window.addEventListener("keydown", onShortcut);
+    return () => window.removeEventListener("keydown", onShortcut);
+  }, []);
   useEffect(() => {
     const openNewList = () => setNewListOpen(true);
     const offerUpdate = () => {
@@ -64,7 +77,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   const submitSearch = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (!query.trim()) return;
-    router.push(`/app/spaces?search=${encodeURIComponent(query.trim())}`);
+    router.push(`/app/search?q=${encodeURIComponent(query.trim())}`);
   };
   const submitNewList = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -89,13 +102,13 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           </Link>
         </div>
         <form onSubmit={submitSearch} className="hidden w-full max-w-[420px] items-center md:flex">
-          <label className="relative w-full"><Search className="absolute start-3.5 top-1/2 size-4 -translate-y-1/2 text-muted" /><Input value={query} onChange={(e) => setQuery(e.target.value)} placeholder={t("search")} className="h-10 rounded-xl border-transparent bg-soft/65 ps-10 shadow-none focus-visible:border-brand/25" /></label>
+          <label className="relative w-full"><Search className="absolute start-3.5 top-1/2 size-4 -translate-y-1/2 text-muted" /><Input ref={searchInputRef} value={query} onChange={(e) => setQuery(e.target.value)} placeholder={t("search")} className="h-10 rounded-xl border-transparent bg-soft/65 ps-10 shadow-none focus-visible:border-brand/25" /></label>
           <kbd className="ms-[-54px] z-10 hidden rounded-md border border-line bg-surface px-1.5 py-1 text-[9px] text-muted xl:block">⌘ K</kbd>
         </form>
         <div className="flex items-center gap-2.5">
           <Badge variant="neutral" className="hidden border-0 bg-soft text-muted sm:inline-flex"><span className="me-1 size-1.5 rounded-full bg-violet-500" />{t("demo")}</Badge>
           <Button variant="default" size="sm" className="hidden rounded-xl sm:inline-flex" onClick={() => setNewListOpen(true)}><Plus className="size-4" />{t("newList")}</Button>
-          <InstallAppButton />
+          {pathname !== "/app" && <InstallAppButton />}
           <Button variant="outline" size="icon" className="size-9" aria-label={locale === "fa" ? "تغییر زبان" : "Change language"} onClick={() => setLocale(locale === "fa" ? "en" : "fa")}><span className="text-[11px] font-bold">{locale === "fa" ? "EN" : "فا"}</span></Button>
           <Button variant="outline" size="icon" className="size-9" aria-label={isDark ? (locale === "fa" ? "تم روشن" : "Light theme") : (locale === "fa" ? "تم تیره" : "Dark theme")} onClick={() => setTheme(isDark ? "light" : "dark")}>
             {isDark ? <Sun className="size-4" /> : <Moon className="size-4" />}
@@ -120,7 +133,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         <main className="min-w-0 px-4 pb-28 pt-6 sm:px-6 lg:px-9 lg:pb-12 lg:pt-9">
           <div className="mb-5 flex items-center justify-between gap-3 sm:hidden">
             <div className="min-w-0"><div className="text-[11px] text-muted">{t("demo")}</div><div className="truncate text-sm font-bold">{t("appName")}</div></div>
-            <Button variant="default" size="sm" className="shrink-0 rounded-xl" onClick={() => setNewListOpen(true)}><Plus className="size-4" />{t("newList")}</Button>
+            <div className="flex shrink-0 gap-2"><Button variant="outline" size="icon" className="size-9" onClick={() => router.push("/app/search")} aria-label={t("searchTitle")}><Search className="size-4" /></Button><Button variant="default" size="sm" className="rounded-xl" onClick={() => setNewListOpen(true)}><Plus className="size-4" />{t("newList")}</Button></div>
           </div>
           {children}
         </main>

@@ -11,8 +11,9 @@ type InstallPromptEvent = Event & {
   prompt: () => Promise<void>;
   userChoice: Promise<{ outcome: "accepted" | "dismissed"; platform?: string }>;
 };
+type InstallAppButtonProps = { alwaysVisible?: boolean; prominent?: boolean };
 
-export function InstallAppButton() {
+export function InstallAppButton({ alwaysVisible = false, prominent = false }: InstallAppButtonProps) {
   const { t, locale } = useLocale();
   const [promptEvent, setPromptEvent] = useState<InstallPromptEvent | null>(null);
   const [isIOS, setIsIOS] = useState(false);
@@ -36,7 +37,7 @@ export function InstallAppButton() {
     };
   }, []);
 
-  if (installed || (!promptEvent && !isIOS)) return null;
+  if (installed || (!promptEvent && !isIOS && !alwaysVisible)) return null;
 
   const install = async () => {
     if (!promptEvent) { setOpen(true); return; }
@@ -47,9 +48,9 @@ export function InstallAppButton() {
   };
 
   return <>
-    <Button variant="outline" size="icon" className="size-9 sm:w-auto sm:px-3" aria-label={t("install")} title={t("install")} onClick={install}>
+    <Button variant={prominent ? "secondary" : "outline"} size={prominent ? "default" : "icon"} className={prominent ? "rounded-xl" : "size-9 sm:w-auto sm:px-3"} aria-label={t("install")} title={t("install")} onClick={install}>
       {isIOS && !promptEvent ? <Smartphone className="size-4" /> : <Download className="size-4" />}
-      <span className="hidden text-xs sm:inline">{t("install")}</span>
+      <span className={prominent ? "inline" : "hidden text-xs sm:inline"}>{t("install")}</span>
     </Button>
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogContent>
@@ -59,7 +60,7 @@ export function InstallAppButton() {
           <DialogDescription>{t("installHelp")}</DialogDescription>
         </DialogHeader>
         <div className="rounded-2xl border border-line bg-surface-soft p-4 text-sm leading-7 text-muted">
-          {isIOS ? t("installIOS") : locale === "fa" ? "از منوی مرورگر، گزینهٔ نصب یا افزودن به صفحهٔ اصلی را انتخاب کن." : "Use your browser menu and choose Install or Add to Home Screen."}
+          {isIOS ? t("installIOS") : t("installFallback")}
         </div>
         <Button className="mt-4 w-full" variant="secondary" onClick={() => setOpen(false)}>{t("close")}</Button>
       </DialogContent>

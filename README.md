@@ -47,13 +47,19 @@ The current UI includes:
 
 - A responsive dashboard with overview statistics, shared spaces, recent activity and tasks
 - Space discovery, creation and detail views, with sample member and invitation states
-- Shared list creation and rename/delete with undo, plus item editing, optional notes/quantities, completion, filtering and reordering
-- Task creation and completion, plus reminder and expense preview screens
-- Settings for Persian/English, RTL/LTR and light/dark appearance
+- Shared list creation, rename/delete with undo, duplication and bulk completion/reopening, plus item editing, optional notes/quantities, filtering and reordering
+- A bilingual template library for groceries, travel packing, household reset, shared meals, project kickoff and get-togethers
+- A local activity timeline for changes made in this browser, with filters and separate history clearing
+- Global search across spaces, lists, list items, tasks and expenses, with a `Ctrl/⌘+K` shortcut and mobile search entry point
+- Task creation, editing, assignment, due-date and priority filters, completion and undoable deletion
+- Browser-local reminder creation, completion and snoozing; these are in-app demo records, not scheduled system notifications or push alerts
+- Sample expense entries with manual demo settlement status; no payment or real balance transfer
+- A visible PWA install call-to-action, manifest, public-asset-only service worker cache and offline help screen
+- Settings for Persian/English, RTL/LTR and light/dark appearance, with JSON/CSV exports of current preview data
 - A sample invitation preview route at `/invite/[token]`
 - Responsive desktop navigation and a mobile bottom navigation bar
 
-Every action that is local-only or not backed by a real service is identified in the interface. Changes made to lists, tasks, spaces, expenses and display preferences remain in the current browser and can be cleared from **Settings → Reset sample data**.
+Every action that is local-only or not backed by a real service is identified in the interface. Changes made to lists, tasks, spaces, reminders, expenses, local activity and display preferences remain in the current browser and can be cleared from **Settings → Reset sample data**. JSON and CSV exports are generated locally on demand.
 
 ## Storybook
 
